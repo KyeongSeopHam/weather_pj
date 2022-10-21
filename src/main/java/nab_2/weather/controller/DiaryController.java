@@ -1,0 +1,80 @@
+package nab_2.weather.controller;
+
+import nab_2.weather.service.DiaryService;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+
+/**
+ * 컨트롤러라는건 생각해보면 클라이언트와 맞닿아있는 애인데
+ * 내가만들 날씨일기어플에 어떤 api를 제공해줘야할지? 생각해보자.
+ * <p>
+ * 1. 날씨일기를 작성하는 api인데 api의 경로를 지정을해줘야할것이다.
+ * <p>
+ * 함수를 만들어보자 createDiary
+ * <p>
+ * 이 함수에 어떤 path를통해서 요청을 보냈을때 이 함수가 동작할것인가 명시해보자.
+ * /create/diary 라는경로로 요청을 보냈을떄  createDiary()동작
+ * 겟맵핑은:조회할떄 많이쓰고  포스트맵핑은 보통 : 저장할때 많이쓰임
+ * 그런데 생각해보면 /create/diary 말고도 다이어리안에 쓴 텍스트값이라던가
+ * 이 일기를 언제썻는지에 값이라던가 그 값들을
+ * 파라미터와 리퀘스트바디로 받아보자.
+ * <p>
+ * mvc 패턴에따라서 만들어야했던
+ * Diary  컨트롤러, 서비스, 레파지토리
+ * <p>
+ * 1. 클라이언트에서  앱측에서 일기를쓰고  ex) 10월21일 ~~~~~
+ * 앱에서 -> 컨트롤러로 보내줘서 그 값을 POST로 받고 서비스까지 던저준작업을 했음
+ */
+
+
+/**이 함수에 어떤 path를통해서 요청을 보냈을때 이 함수가 동작할것인가 명시해보자.
+ /create/diary 라는경로로 요청을 보냈을떄  createDiary()동작
+ 겟맵핑은:조회할떄 많이쓰고  포스트맵핑은 보통 : 저장할때 많이쓰임
+ 그런데 생각해보면 /create/diary 말고도 다이어리안에 쓴 텍스트값이라던가
+ 이 일기를 언제썻는지에 값이라던가 그 값들을
+ 파라미터와 리퀘스트바디로 받아보자.
+
+ mvc 패턴에따라서 만들어야했던
+ Diary  컨트롤러, 서비스, 레파지토리
+
+ 1. 클라이언트에서  앱측에서 일기를쓰고  ex) 10월21일 ~~~~~
+ 앱에서 -> 컨트롤러로 보내줘서 그 값을 POST로 받고 서비스까지 던저준작업을 했음
+
+ */
+
+
+//@Controller
+// @RestController 쓰면 컨트롤러랑 차이가모냐? 어떤기능이추가되는가 Http응답을보낼때 200, 404 상태코드들을
+// 이 컨트롤러에서 지정을해서 ex) 잘못보냈어 404 내려보낼수있게끔 해주는역할
+
+/**브라우저에 그냥 테스트하는건 문제점들이있다.
+ ex) 브루아저에다가 localhost8080:/create/diary 했을떄 브라우저입장에서는 get요청을 보내는걸로 브라우저가 인식을 합니다.
+ 그래서 post요청을 보내기에는 적합하지않습니다. 또 하나 브라우저는 기본적으로 캐싱을 합니다.
+ 그래서 브라우저는항상 받아온 웹사이트 데이터를 빨리빨리 서빙을해줘야하는데 (그려줘야하는데) 캐싱이라는 개념이 브라우저에 녹아져있기에
+ api 테스트하기에는 지금 보내는 요청에대한 결과값을 정확히 보고싶어서 테스트하는건데 몬가 캐싱된 데이터의값의 영향을받아서
+ 다른 데이터값이 나올수있기떄문에  xxxxx => api 테스트를 간단히하고싶을떄 포스트맨이용해보자.
+ */
+
+
+@RestController
+public class DiaryController {
+    private final DiaryService diaryService;
+
+    public DiaryController(DiaryService diaryService) {
+        this.diaryService = diaryService;
+    }
+
+    @PostMapping("/create/diary")
+        // 이렇게 받은값들을 서비스에 전달을 해줘야하는데 그래서 다이어리서비스 만들어둔걸 사용하자(애한테 전달해줘야하니)
+    void createDiary(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestBody String text) {
+
+        diaryService.createDiary(date, text);
+
+    }
+}
