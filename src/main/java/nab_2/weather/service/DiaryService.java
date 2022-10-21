@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -64,6 +65,52 @@ public class DiaryService {
 
 
     }
+
+    // 그럼여기서는 다이어리 레파지토리에서 가져와야할것이다. 무엇을? -> 일기값을
+    // 일기값을 가져오려면 db를조회해야하고 서비스입장에서는 db를 조회하려면 레파지토리를통해야할것이다.
+    // 레파지토리에서 이 date라는 값을 기준으로  그날의 일기의 데이터를 가져오고싶은데...
+
+    public List<Diary> readDiary(LocalDate date){
+        return diaryRepository.findAllByDate(date);
+    }
+
+
+    public List<Diary> readDiaries(LocalDate startDate, LocalDate endDate){
+        return diaryRepository.findAllByDateBetween(startDate,endDate);
+    }
+
+
+    /**
+    예로들어 ex)  10월21일에 쓴 일기가 2건이라 생각했을때 updateDiary() 2건다 수정해버리면 문제가생기니
+     API에서 1번째것만 수정하는걸로 정의하는걸로하자
+     그럼 첫번째 일기가 무엇인지 가져와야하는상황
+     */
+    public void updateDiary(LocalDate date, String text){
+        Diary nowDiary = diaryRepository.getFirstByDate(date);
+        //getFirstByDate(date) 이날짜에 있는 데이터 하나를 가져오는거 limit1
+        nowDiary.setText(text);
+        diaryRepository.save(nowDiary); // 덮어씌우자
+    }
+    /**
+    삭제
+     */
+    public void deleteDiary(LocalDate date){
+        diaryRepository.deleteAllByDate(date);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private String getWeatherString() {
         String apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=seoul&appid=" + apiKey;
