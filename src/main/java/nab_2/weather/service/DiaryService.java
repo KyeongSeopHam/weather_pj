@@ -8,6 +8,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional(readOnly = true) // 이 다이어리서비스안에있는 모든 메소드들이 트랜잭션으로되고 다 readOnly만 가능하게된다.
 public class DiaryService {
 
     @Value("${openweathermap.key}")
@@ -31,6 +34,7 @@ public class DiaryService {
         this.diaryRepository = diaryRepository;
     }
 
+@Transactional(isolation = Isolation.SERIALIZABLE)
     public void createDiary(LocalDate date, String text) {
 /**
  1. open whather map에서 날씨 데이터 가져오기.
@@ -69,7 +73,7 @@ public class DiaryService {
     // 그럼여기서는 다이어리 레파지토리에서 가져와야할것이다. 무엇을? -> 일기값을
     // 일기값을 가져오려면 db를조회해야하고 서비스입장에서는 db를 조회하려면 레파지토리를통해야할것이다.
     // 레파지토리에서 이 date라는 값을 기준으로  그날의 일기의 데이터를 가져오고싶은데...
-
+    @Transactional(readOnly = true)
     public List<Diary> readDiary(LocalDate date){
         return diaryRepository.findAllByDate(date);
     }
@@ -85,6 +89,7 @@ public class DiaryService {
      API에서 1번째것만 수정하는걸로 정의하는걸로하자
      그럼 첫번째 일기가 무엇인지 가져와야하는상황
      */
+
     public void updateDiary(LocalDate date, String text){
         Diary nowDiary = diaryRepository.getFirstByDate(date);
         //getFirstByDate(date) 이날짜에 있는 데이터 하나를 가져오는거 limit1
