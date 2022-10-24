@@ -24,4 +24,15 @@ public class Diary {
     private double temperature;
     private String text;
     private LocalDate date;
+
+
+    //다이어리 라는 클래스안에다가 input으로 받은  DateWeather dateWeather 객체안의값들을넣어줌
+    public void setDateWeather(DateWeather dateWeather){
+        this.date=dateWeather.getDate();
+        this.weather=dateWeather.getWeather();
+        this.icon=dateWeather.getIcon();
+        this.temperature=dateWeather.getTemperature();
+
+
+    }
 }

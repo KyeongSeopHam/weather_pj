@@ -1,12 +1,19 @@
 package nab_2.weather.service;
 
+import nab_2.weather.WeatherApplication;
+import nab_2.weather.domain.DateWeather;
 import nab_2.weather.domain.Diary;
+import nab_2.weather.error.InvalidDate;
+import nab_2.weather.repository.DateWeatherRepository;
 import nab_2.weather.repository.DiaryRepository;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,28 +35,41 @@ public class DiaryService {
     private String apiKey;
 
     private final DiaryRepository diaryRepository;
+    private final DateWeatherRepository dateWeatherRepository; // 특정시간에 캐싱처리하기위해서 레파지토리쓰려구
+
+    private static final Logger logger = LoggerFactory.getLogger(WeatherApplication.class);
+
 
     // 다이어리서비스 빈이 생성될떄 다이어리 레파지토리를 가져올거
-    public DiaryService(DiaryRepository diaryRepository) {
+    public DiaryService(DiaryRepository diaryRepository, DateWeatherRepository dateWeatherRepository) {
         this.diaryRepository = diaryRepository;
+        this.dateWeatherRepository = dateWeatherRepository;
+
     }
+
+
+    @Transactional
+    // 매익 특정 시간마다 날씨 데이터를 저장해주는 함수
+    @Scheduled(cron = "0 0 2 * * *")   // 초 분 시 일 월  새벽2시마다 업데이트되게
+    public void saveWeatherDate(){
+        dateWeatherRepository.save(getWeatherFromApi());  // db안에 데이터웨덜 엔티티를 저장해야할거 날씨데이터를 가져와야하니까 그함수만들자
+    }
+
+
+
 
 @Transactional(isolation = Isolation.SERIALIZABLE)
     public void createDiary(LocalDate date, String text) {
-/**
- 1. open whather map에서 날씨 데이터 가져오기.
- */
-        System.out.println(getWeatherString());    // 아래에서 반환된값을 출력해보자.
-        String weatherData = getWeatherString(); // 위에서 원했던 json값이 오는걸확인했으니 그값을 저장해보자.
 
-        /**
-         2. 받아온 날씨 json 파싱하기
-         */
-        Map<String, Object> parsedWeather = parseWeather(weatherData);
-        // test log
-        for (Map.Entry<String, Object> entrySet : parsedWeather.entrySet()) {
-            System.out.println(entrySet.getKey() + " :" + entrySet.getValue());
-        }
+        logger.info("다이어리 시작 로그");
+
+
+        // 날씨 데이터 가져오기 (api에서가져오기 x db에 이미 저장된거가져오기 전날에저장한거)
+//        DateWeather dateWeather = getDateWeather(date);  <- 이렇게하면 (ex 2000-10-10)입력해도 오늘날짜로가져옴
+        DateWeather dateWeather = getDateWeather2(date);
+        
+
+
 
         /**
          3. 파싱된 데이터 + 일기 값  내 db에 넣기
@@ -57,15 +77,79 @@ public class DiaryService {
          도메인패키지 -> 보내고받기위한 클래스생성
          */
 
+/**
+   1. 매번 다이어리를 쓸때마다 날씨데이터를 가져오는 파싱하는 불필요한 작업을생략
+   2. 매일매일 api에서 가져와서 db에 저장했기떄문에 시간에따라 데이터가 쌓이면  비용적측면에서 유리 / 캐싱
+ */
+
         Diary nowDiary = new Diary();
-        nowDiary.setWeather(parsedWeather.get("main").toString());
-        nowDiary.setIcon(parsedWeather.get("icon").toString());
-        nowDiary.setTemperature((Double) parsedWeather.get("temp"));
+       nowDiary.setDateWeather(dateWeather);
         nowDiary.setText(text);
-        nowDiary.setDate(date);
 //  서비스단에서 -> 디비에저장하기위해서 -> 레파지토리를 거쳐야함
 
         diaryRepository.save(nowDiary);
+
+
+        logger.info("다이어리 로그 끝");
+    }
+
+    
+    //getDateWeather2  특정날짜입력시 db에서가져오든 api에서가져오든 데이터가져오기
+    private DateWeather getDateWeather2(LocalDate date) {
+
+        List<DateWeather> allByDateListFormDB = dateWeatherRepository.findAllByDate(date);
+
+        if(allByDateListFormDB.size()==0){
+            // db 없으니까 api에서 가져와야함
+
+            return getWeatherFromApi2(date);
+        }else{
+            return allByDateListFormDB.get(0);
+        }
+
+
+    }
+
+    private DateWeather getWeatherFromApi2(LocalDate date) {
+
+        /**
+         1. open whather map에서 날씨 데이터 가져오기.
+         */
+
+        String weatherData = getWeatherString(); // 위에서 원했던 json값이 오는걸확인했으니 그값을 저장해보자.
+
+        /**
+         2. 받아온 날씨 json 파싱하기
+         */
+        Map<String, Object> parsedWeather = parseWeather(weatherData);
+        DateWeather dateWeather = new DateWeather();
+
+        dateWeather.setDate(date);
+
+        dateWeather.setWeather(parsedWeather.get("main").toString());
+        dateWeather.setIcon(parsedWeather.get("icon").toString());
+        dateWeather.setTemperature((Double) parsedWeather.get("temp"));
+
+        return dateWeather;
+
+
+    }
+
+
+    // 2020-05-05
+    private DateWeather getDateWeather(LocalDate date) {
+        // !!!일단  ex) 10/22일 값을 가져오고싶다면  10/22날씨 db가있는지 확인해보고(스캐쥴링적용하니까)
+
+        List<DateWeather> dateWeatherListFromDB = dateWeatherRepository.findAllByDate(date);
+
+
+        if(dateWeatherListFromDB.size()==0){
+            // 새로 api에서 날씨정보를 가져와야한다.
+            return getWeatherFromApi();
+        }else { // 그날의저장된 날씨db가있다면?
+                return dateWeatherListFromDB.get(0);
+        }
+
 
 
     }
@@ -75,6 +159,12 @@ public class DiaryService {
     // 레파지토리에서 이 date라는 값을 기준으로  그날의 일기의 데이터를 가져오고싶은데...
     @Transactional(readOnly = true)
     public List<Diary> readDiary(LocalDate date){
+
+//        if(date.isAfter(LocalDate.ofYearDay(3000,10))){
+//            throw new InvalidDate();
+//        }
+
+
         return diaryRepository.findAllByDate(date);
     }
 
@@ -102,19 +192,6 @@ public class DiaryService {
     public void deleteDiary(LocalDate date){
         diaryRepository.deleteAllByDate(date);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private String getWeatherString() {
@@ -189,6 +266,35 @@ public class DiaryService {
 
         return resultMap;
     }
+
+
+
+
+    // getWeatherFromApi() ->  open whather map에서 날씨 데이터 가져오기. -> 받아온 날씨 json 파싱하기 -> 그 결과물을 DateWeather객체의 형식에넣어서 반환
+    private DateWeather getWeatherFromApi(){
+        /**
+         1. open whather map에서 날씨 데이터 가져오기.
+         */
+//        System.out.println(getWeatherString());    // 아래에서 반환된값을 출력해보자.
+
+        String weatherData = getWeatherString(); // 위에서 원했던 json값이 오는걸확인했으니 그값을 저장해보자.
+
+        /**
+         2. 받아온 날씨 json 파싱하기
+         */
+        Map<String, Object> parsedWeather = parseWeather(weatherData);
+        DateWeather dateWeather = new DateWeather();
+
+        dateWeather.setDate(LocalDate.now());
+
+        dateWeather.setWeather(parsedWeather.get("main").toString());
+        dateWeather.setIcon(parsedWeather.get("icon").toString());
+        dateWeather.setTemperature((Double) parsedWeather.get("temp"));
+
+        return dateWeather;
+    }
+
+
 
 
 }
