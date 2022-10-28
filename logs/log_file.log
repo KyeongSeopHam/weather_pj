@@ -1,3 +1,29 @@
-[2022-10-25 00:25:14:5348027][SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-[2022-10-25 00:25:14:5348068][SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-[2022-10-25 00:25:14:5348075][SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+[2022-10-28 02:39:47:612][main] INFO  nab_2.weather.WeatherApplication - Starting WeatherApplication using Java 17.0.5 on DESKTOP-IA37VBO with PID 18880 (D:\weather_pj\build\classes\java\main started by nabi in D:\weather_pj)
+[2022-10-28 02:39:47:617][main] INFO  nab_2.weather.WeatherApplication - No active profile set, falling back to 1 default profile: "default"
+[2022-10-28 02:39:48:1215][main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+[2022-10-28 02:39:48:1272][main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 48 ms. Found 2 JPA repository interfaces.
+[2022-10-28 02:39:49:1763][main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+[2022-10-28 02:39:49:1774][main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+[2022-10-28 02:39:49:1774][main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+[2022-10-28 02:39:49:1774][main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.65]
+[2022-10-28 02:39:49:1909][main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+[2022-10-28 02:39:49:1909][main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1242 ms
+[2022-10-28 02:39:49:2052][main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+[2022-10-28 02:39:49:2128][main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+[2022-10-28 02:39:49:2182][main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+[2022-10-28 02:39:49:2239][main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.11.Final
+[2022-10-28 02:39:49:2426][main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+[2022-10-28 02:39:49:2541][main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+[2022-10-28 02:39:50:3074][main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+[2022-10-28 02:39:50:3082][main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+[2022-10-28 02:39:50:3441][main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+[2022-10-28 02:39:51:3711][main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+[2022-10-28 02:39:51:3733][main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+[2022-10-28 02:39:51:3750][main] INFO  nab_2.weather.WeatherApplication - Started WeatherApplication in 3.582 seconds (JVM running for 5.74)
+[2022-10-28 02:40:11:24326][http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2022-10-28 02:40:11:24327][http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+[2022-10-28 02:40:11:24327][http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+[2022-10-28 02:40:11:24342][http-nio-8080-exec-1] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' not supported]
+[2022-10-28 02:40:44:57096][http-nio-8080-exec-3] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' not supported]
+[2022-10-28 02:41:12:84795][http-nio-8080-exec-5] INFO  nab_2.weather.WeatherApplication - 다이어리 시작 로그
+[2022-10-28 02:41:12:85561][http-nio-8080-exec-5] INFO  nab_2.weather.WeatherApplication - 다이어리 로그 끝
