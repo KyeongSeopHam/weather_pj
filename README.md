@@ -38,7 +38,7 @@
 
 
 - API
-   !(a) [openWeathermap(API)](https://openweathermap.org/api)
+   [openWeathermap(API)](https://openweathermap.org/api)
 
 
 - 개발 환경
