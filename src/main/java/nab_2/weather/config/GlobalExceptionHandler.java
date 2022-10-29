@@ -1,4 +1,4 @@
-package config;
+package nab_2.weather.config;
 
 
 import org.springframework.http.HttpStatus;
