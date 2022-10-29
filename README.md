@@ -38,28 +38,28 @@
 
 
 - API
-    - [openWeathermap(API)](https://openweathermap.org/api)
-
-* Swagger API
+   !(a) [openWeathermap(API)](https://openweathermap.org/api)
 
 
 - 개발 환경
     - intelliJ IDEA, Gradle, Lombok , JPA
+    
+* Swagger API
 
+https://user-images.githubusercontent.com/43702182/198825968-d5421eb1-e617-4a27-ae15-399aec0f4731.mp4
 
 
 
 ## 🐱페이지별 상세 기능
 
-| 일기 작성                                                                                                                   | 일기 조회                                                                                                             |
-|-------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-| ![Create](C:/Users/nabi/Desktop/CREATE.gif)<br/>                                                                        | ![api가져오는부분](https://user-images.githubusercontent.com/43702182/189246046-1b814a93-d917-4c2b-9c5f-25fca701b344.PNG) |
-|일기 수정하기|일기 삭제하기|
-| ![20개근처가까운wifi리스트](https://user-images.githubusercontent.com/43702182/189246052-f74572d3-112c-48ad-8567-aaf272ee9b04.PNG) | ![히스토리목록및삭제](https://user-images.githubusercontent.com/43702182/189246051-1ecaf92b-a15e-4d34-b3ea-639bf7125cde.PNG) |
+일기 작성, 조회, 수정, 삭제
+
+https://user-images.githubusercontent.com/43702182/198825981-044b26b6-1a03-491c-8aef-8ce21b504e5f.mp4
+
+https://user-images.githubusercontent.com/43702182/198826151-9d1a0b80-278d-4144-81bd-cfd886e7f253.mp4
 
 
-
-
+https://user-images.githubusercontent.com/43702182/198826161-751a5117-f9af-4a83-b2f3-2b0a0edda7e4.mp4
 
 
 
@@ -98,5 +98,16 @@
 - 스프링부트를 활용해서 CRUD 작업을 해보았는데 아직 익숙치 않아서 어려운 부분이 많았다.
 - 코드를 짜면서 잘 알지 못했던 부분중에 프로젝트의 구조,설계부분이 이전보다 눈에 들어오는거같다.
 - 내 눈앞에 수많은 기술,원리들이 다가오는데 어렵지만 할수있다.
+
+
+
+
+
+
+
+
+
+
+
 
 
